@@ -1,0 +1,22 @@
+{
+  "server": {
+    "port": 8081,
+    "hostname": "0.0.0.0",
+    "logger": {
+      "minStatusCode": 200,
+      "maxStatusCode": 600,
+      "maxFiles": 5,
+      "logLevel": "info",
+      "interval": "1d",
+      "logRequestPayload": true,
+      "logResponse": true
+    },
+    "compression": {
+      "level": 6,
+      "threshold": "10kb"
+    }
+  },
+  "paths": {
+    "assets": ""
+  }
+}
