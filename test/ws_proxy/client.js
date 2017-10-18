@@ -8,7 +8,7 @@
     };
 
     socket.onmessage = function (message) {
-        console.log("PROXY: " + message.data);
+        console.log("PROXY received: " + message.data);
     };
 
     socket.onerror = function (error) {
@@ -26,7 +26,7 @@
 
 
     socket.onmessage = function (message) {
-        console.log("DIRECT: " + message.data);
+        console.log("DIRECT received: " + message.data);
     };
 
     socket.onerror = function (error) {

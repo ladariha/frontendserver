@@ -11,6 +11,7 @@ const proxy = httpProxy.createProxyServer({
 const PROXY_TARGET_HEADER = "x-frontend-proxy-target";
 const PROXY_ENDPOINT = "/_proxy";
 
+exports.PROXY_ENDPOINT = PROXY_ENDPOINT;
 exports.init = (server, app) => {
 
     server.on("upgrade", function (req, socket, head) {

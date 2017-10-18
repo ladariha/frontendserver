@@ -11,7 +11,7 @@ const logger = require("./logger/logger");
 const express = require("express");
 const bodyParser = require("body-parser");
 // server initialization
-const coreModules = ["compression", "proxy"];
+const coreModules = ["compression", "proxy", "websocket"];
 const MAX_JSON_SIZE = "5bm";
 
 let app = logger.init(express(), config.server.logger);
