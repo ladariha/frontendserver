@@ -30,9 +30,12 @@ app
     .get("/", (req, res) => {
         res.send("Hello world\n");
     })
-    .use(express.static(path.join(__dirname, config.paths.assets)));
+    .use(express.static(path.join(__dirname, config.paths.assets)))
+    .use((err, req, res, next) => {
+        require("./logger/logger").getLogger("error", "info").log(err.stack);
+        res.status(500).send();
+    });
 
 server.listen(config.server.port, config.server.hostname);
 
-
-require("./logger/logger").getLogger("system", "info").log(`Started server on http://${config.server.hostname}:${config.server.port}`);
+require("./logger/logger").getLogger("system", "info").log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);
