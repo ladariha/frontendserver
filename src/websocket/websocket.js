@@ -1,12 +1,13 @@
 "use strict";
 
 const WebSocket = require("ws");
-const {PROXY_ENDPOINT} = require("../proxy/proxy");
+const WS_ENDPOINT = "/_ws";
+
 exports.init = (server, app) => {
 
     const wss = new WebSocket.Server({noServer: true});
     server.on("upgrade", (request, socket, head) => {
-        if (!request.url.startsWith(PROXY_ENDPOINT)) {
+        if (request.url.startsWith(WS_ENDPOINT)) {
             wss.handleUpgrade(request, socket, head, (ws) => {
                 wss.emit("connection", ws, request);
             });
@@ -14,7 +15,7 @@ exports.init = (server, app) => {
     });
 
     wss.on("connection", function connection(ws, req) {
-        if (!req.url.startsWith(PROXY_ENDPOINT)) {
+        if (req.url.startsWith(WS_ENDPOINT)) {
             ws.on("message", function incoming(message) {
 
             });

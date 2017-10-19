@@ -19,7 +19,7 @@
 // to frontend directly
 {
     const WebSocket = require("ws");
-    const socket = new WebSocket("ws://localhost:8081/");
+    const socket = new WebSocket("ws://localhost:8081/_ws");
     socket.onopen = function () {
         socket.send("DIRECT: hello from the client 2");
     };
