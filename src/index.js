@@ -11,7 +11,7 @@ const logger = require("./logger/logger");
 const express = require("express");
 const bodyParser = require("body-parser");
 // server initialization
-const coreModules = ["compression", "proxy", "websocket"];
+const coreModules = ["compression", "proxy", "websocket", "assets"];
 const MAX_JSON_SIZE = "5bm";
 
 let app = logger.init(express(), config.server.logger);
@@ -27,10 +27,6 @@ app
         extended: true,
         limit: MAX_JSON_SIZE
     }))
-    .get("/", (req, res) => {
-        res.send("Hello world\n");
-    })
-    .use(express.static(path.join(__dirname, config.paths.assets)))
     .use((err, req, res, next) => {
         require("./logger/logger").getLogger("error", "info").log(err.stack);
         res.status(500).send();
@@ -38,4 +34,5 @@ app
 
 server.listen(config.server.port, config.server.hostname);
 
-require("./logger/logger").getLogger("system", "info").log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);
+require("./logger/logger").getLogger("system", "info")
+    .log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);

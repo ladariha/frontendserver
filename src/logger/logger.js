@@ -7,7 +7,7 @@ require("winston-logrotate");
 const {Logger, transports} = require("winston");
 const expressWinston = require("express-winston");
 
-const LOG_TEMPLATE = "#{{req.id}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms";
+const LOG_TEMPLATE = "Req #{{req.id}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms";
 const LOG_DIR = path.join(__dirname, "..", "..", "logs");
 const LOG_FILE_NAME = "access.log";
 
@@ -61,6 +61,7 @@ exports.getLogger = (prefix = "", logLevel = defaultLogLevel) => {
     let oldLog = logger.log;
     logger.log = function (msg) {
         oldLog.apply(this, [logLevel, `[${prefix}] ${msg}`]);
+        return this;
     };
 
     return logger;

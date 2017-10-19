@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "npm test",
-    "start": "node src/index.js"
+    "start": "rm -rf logs && node src/index.js"
   },
   "author": "Vladimir Riha",
   "license": "ISC",

@@ -14,9 +14,9 @@
     "compression": {
       "level": 6,
       "threshold": "10kb"
+    },
+    "assets": {
+      "location": "../assets"
     }
-  },
-  "paths": {
-    "assets": ""
   }
 }
