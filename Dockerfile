@@ -5,6 +5,8 @@ FROM node:8.7.0
 # docker run -p 8080:8080 -d ladariha/frontend
 
 ENV EXPOSED_PORT=8080
+# install pm2
+RUN npm install -g pm2
 
 # create non-root user so that the node app process won't be running as a root user
 RUN groupadd -r nodejs && useradd -m -r -g nodejs nodejs
@@ -24,4 +26,4 @@ COPY . .
 EXPOSE ${EXPOSED_PORT}
 
 # start the application
-CMD ["npm", "start"]
+CMD ["pm2-docker", "process.json"]

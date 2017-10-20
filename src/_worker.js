@@ -9,17 +9,24 @@ let requestCount = 0;
 exports.start = config => {
 
     const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat"];
+
+    if (process.env.PM2_SETUP) {
+        coreModules.unshift("pm2monitor");
+    }
+
     const MAX_JSON_SIZE = "5bm";
 
     let app = logger.init(express(), config.server.logger);
     const systemLogger = logger.getLogger("system", "info");
     const server = http.createServer(app);
 
-   app.all("*", (req, res, next) => {
+    app.all("*", (req, res, next) => {
         requestCount++;
         if (requestCount >= MAX_REQUESTS && MAX_REQUESTS > -1) {
             systemLogger.log("Maximum number of requests reached, restarting");
-            res.status(503).send();
+            res.status(503);
+            res.set("Retry-After", 7);
+            res.send();
             cluster.worker.kill();
         } else {
             next();

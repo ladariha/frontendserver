@@ -1,0 +1,33 @@
+{
+  "apps": [
+    {
+      "name": "frontendserver",
+      "script": "src/index_pm.js",
+      "out_file": "pm.log",
+      "error_file": "pm.log",
+      "log_file": "pm.log",
+      "merge_logs": true,
+      "instances": -1,
+      "listen_timeout": 10000,
+      "watch": true,
+      "ignore_watch": [
+        "node_modules",
+        "logs",
+        "*log",
+        ".git",
+        "pm.log",
+        "pm2.log"
+      ],
+      "max_memory_restart": "2G",
+      "exec_mode": "cluster",
+      "env": {
+        "NODE_ENV": "development",
+        "PM2_SETUP": "1"
+      },
+      "env_production": {
+        "NODE_ENV": "production",
+        "PM2_SETUP": "1"
+      }
+    }
+  ]
+}

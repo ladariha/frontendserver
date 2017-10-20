@@ -9,7 +9,7 @@ const expressWinston = require("express-winston");
 
 const LOG_TEMPLATE = "[http] Req #{{req.id}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms";
 const LOG_DIR = path.join(__dirname, "..", "..", "logs");
-const LOG_FILE_NAME = "access.log";
+const LOG_FILE_NAME = "frontend.log";
 
 let defaultTransport = null;
 let defaultLogLevel = null;
