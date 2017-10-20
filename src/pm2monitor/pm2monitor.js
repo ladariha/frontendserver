@@ -4,6 +4,13 @@ const pmx = require("pmx");
 const rps = require("./reqPerSec/count");
 const ra = require("./reqAvg/reqAvg");
 const histogramReqs = require("./reqHistogram/reqHistogram");
+
+/**
+ * Wrapper around all PM2 specific metrics
+ * @param server
+ * @param app
+ * @returns {*}
+ */
 exports.init = (server, app) => {
 
     pmx.init({
