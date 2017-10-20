@@ -4,8 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const http = require("http");
 const cluster = require("cluster");
-const MAX_REQUESTS = 10000 + Math.round(Math.random() * 10000);
-let requestCount = 0;
+const MAX_REQUESTS = -1; //10000 + Math.round(Math.random() * 10000);
+
 exports.start = config => {
 
     const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat"];
@@ -17,12 +17,13 @@ exports.start = config => {
     const MAX_JSON_SIZE = "5bm";
 
     let app = logger.init(express(), config.server.logger);
+    app.locals.requestCount = 0;
     const systemLogger = logger.getLogger("system", "info");
     const server = http.createServer(app);
 
     app.all("*", (req, res, next) => {
-        requestCount++;
-        if (requestCount >= MAX_REQUESTS && MAX_REQUESTS > -1) {
+        app.locals.requestCount++;
+        if (app.locals.requestCount >= MAX_REQUESTS && MAX_REQUESTS > -1) {
             systemLogger.log("Maximum number of requests reached, restarting");
             res.status(503);
             res.set("Retry-After", 7);
@@ -48,6 +49,7 @@ exports.start = config => {
         });
 
     server.listen(config.server.port, config.server.hostname);
+    app.locals.startTime = new Date();
 
     systemLogger.log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);
 

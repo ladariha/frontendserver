@@ -1,7 +1,9 @@
 "use strict";
 
 const pmx = require("pmx");
-const countMetrics = require("./countMetrics");
+const rps = require("./reqPerSec/count");
+const ra = require("./reqAvg/reqAvg");
+const histogramReqs = require("./reqHistogram/reqHistogram");
 exports.init = (server, app) => {
 
     pmx.init({
@@ -12,7 +14,8 @@ exports.init = (server, app) => {
         ports: true // ports usage
     });
 
-    app.use(countMetrics);
+    rps(app);
+    ra(app);
+    histogramReqs(app);
     return app;
-
 };
