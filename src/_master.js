@@ -1,8 +1,9 @@
 "use strict";
 const cluster = require("cluster");
+const CPU_COUNT = Math.round(require("os").cpus().length * 0.75);
 
-exports.start = config => {
-    for (let i = 0; i < config.server.size; i++) {
+exports.start = () => {
+    for (let i = 0; i < CPU_COUNT; i++) {
         cluster.fork();
     }
 
@@ -11,7 +12,7 @@ exports.start = config => {
     });
 
     cluster.on("exit", function workeronline(worker, code, signal) {
-        console.log(`[${new Date().toISOString()}] Worker ${worker.process.pid} has exited with code ${signal}`);
+        console.log(`[${new Date().toISOString()}] Worker ${worker.process.pid} has exited with code ${signal}, respawning`);
         cluster.fork();
     });
 };

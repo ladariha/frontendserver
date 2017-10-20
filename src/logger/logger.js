@@ -7,7 +7,7 @@ require("winston-logrotate");
 const {Logger, transports} = require("winston");
 const expressWinston = require("express-winston");
 
-const LOG_TEMPLATE = "Req #{{req.id}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms";
+const LOG_TEMPLATE = "[http] Req #{{req.id}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms";
 const LOG_DIR = path.join(__dirname, "..", "..", "logs");
 const LOG_FILE_NAME = "access.log";
 
@@ -24,7 +24,7 @@ exports.init = (app, loggerConfiguration) => {
         level: defaultLogLevel,
         size: "10m",
         keep: loggerConfiguration.maxFiles || 5,
-        compress: true
+        compress: false
     });
 
     return app
