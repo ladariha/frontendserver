@@ -24,5 +24,5 @@ exports.init = (server, app) => {
     rps(app);
     ra(app);
     histogramReqs(app);
-    return app;
+    return Promise.resolve(app);
 };

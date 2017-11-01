@@ -13,5 +13,5 @@ exports.init = (server, app, logger, config) => {
         etag: true
     }));
     logger.log(`Assets location: ${assets}`);
-    return app;
+    return Promise.resolve(app);
 };

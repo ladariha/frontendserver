@@ -23,5 +23,5 @@ exports.init = (server, app) => {
         }
     });
 
-    return app;
+    return Promise.resolve(app);
 };

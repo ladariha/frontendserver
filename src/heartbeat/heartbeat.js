@@ -7,5 +7,5 @@ exports.init = (server, app) => {
             startTimestamp : app.locals.startTime.getTime()
         });
     });
-    return app;
+    return Promise.resolve(app);
 };

@@ -8,7 +8,7 @@ const MAX_REQUESTS = -1; //10000 + Math.round(Math.random() * 10000);
 
 exports.start = config => {
 
-    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat"];
+    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints"];
 
     if (process.env.PM2_SETUP) {
         coreModules.unshift("pm2monitor");
@@ -33,24 +33,31 @@ exports.start = config => {
             next();
         }
     });
-    app = coreModules.reduce((acc, coreModule) => {
-        return require(`./${coreModule}/${coreModule}`).init(server, acc, logger.getLogger(coreModule), config.server[coreModule]);
-    }, app);
-    app
-        .use(bodyParser.json({limit: MAX_JSON_SIZE})) // to support JSON-encoded bodies
-        .use(bodyParser.urlencoded({
-            extended: true,
-            limit: MAX_JSON_SIZE
-        }))
-        .use((err, req, res, next) => {
-            require("./logger/logger").getLogger("error", "info").log(err.stack);
-            res.status(500).send();
-            cluster.worker.kill(); // restart on error
-        });
 
-    server.listen(config.server.port, config.server.hostname);
-    app.locals.startTime = new Date();
+    let pr = Promise.resolve(app);
 
-    systemLogger.log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);
+    for (let coreModule of coreModules) {
+        pr = require(`./${coreModule}/${coreModule}`).init(server, app, logger.getLogger(coreModule), config.server[coreModule]);
+    }
+
+    pr.then(app => {
+        app
+            .use(bodyParser.json({limit: MAX_JSON_SIZE})) // to support JSON-encoded bodies
+            .use(bodyParser.urlencoded({
+                extended: true,
+                limit: MAX_JSON_SIZE
+            }))
+            .use((err, req, res, next) => {
+                require("./logger/logger").getLogger("error", "info").log(err.stack);
+                res.status(500).send();
+                cluster.worker.kill(); // restart on error
+            });
+
+        server.listen(config.server.port, config.server.hostname);
+        app.locals.startTime = new Date();
+
+        systemLogger.log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);
+    });
+
 
 };

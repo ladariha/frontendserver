@@ -27,7 +27,7 @@ exports.init = (server, app) => {
         }
     });
 
-    return app.use(PROXY_ENDPOINT, (req, res) => {
+    app.use(PROXY_ENDPOINT, (req, res) => {
         let target = req.headers[PROXY_TARGET_HEADER];
         if (!target) {
             target = req.query.target;
@@ -36,4 +36,5 @@ exports.init = (server, app) => {
             target: target
         });
     });
+    return Promise.resolve(app);
 };
