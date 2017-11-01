@@ -2,7 +2,7 @@
 const cluster = require("cluster");
 const CPU_COUNT = Math.round(require("os").cpus().length * 0.75);
 
-exports.start = () => {
+exports.start = config => {
     for (let i = 0; i < CPU_COUNT; i++) {
         cluster.fork();
     }

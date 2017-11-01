@@ -5,6 +5,7 @@ FROM node:8.7.0
 # docker run -p 8080:8080 -d ladariha/frontend
 
 ENV EXPOSED_PORT=8080
+ENV EXPOSED_PORT_PM2_HEALTH=9615
 # install pm2
 RUN npm install -g pm2
 
@@ -26,4 +27,13 @@ COPY . .
 EXPOSE ${EXPOSED_PORT}
 
 # start the application
-CMD ["pm2-docker", "process.json"]
+
+# run via pm2 and expose web health
+EXPOSE ${EXPOSED_PORT_PM2_HEALTH}
+CMD ["pm2-docker", "process.json", "--web"]
+
+# run via pm2 without exposing web health
+#CMD ["pm2-docker", "process.json"]
+
+# run without pm2
+#CMD ["npm", "start"]

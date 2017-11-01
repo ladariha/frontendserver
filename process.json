@@ -14,10 +14,14 @@
         "node_modules",
         "logs",
         "*log",
+        "**/*log",
+        ".pm2",
         ".git",
         ".idea",
+        ".bash_history",
         "pm.log",
-        "pm2.log"
+        "pm2.log",
+        "pm2/pm2.log"
       ],
       "max_memory_restart": "2G",
       "exec_mode": "cluster",
