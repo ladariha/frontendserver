@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "eventsource": "^1.0.5",
     "websocket": "^1.0.24",
     "ws": "^3.2.0"
   }

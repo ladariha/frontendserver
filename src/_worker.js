@@ -8,7 +8,7 @@ const MAX_REQUESTS = -1; //10000 + Math.round(Math.random() * 10000);
 
 exports.start = config => {
 
-    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints"];
+    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy"];
 
     if (process.env.PM2_SETUP) {
         coreModules.unshift("pm2monitor");
@@ -37,7 +37,7 @@ exports.start = config => {
     let pr = Promise.resolve(app);
 
     for (let coreModule of coreModules) {
-        pr = require(`./${coreModule}/${coreModule}`).init(server, app, logger.getLogger(coreModule), config.server[coreModule]);
+        pr = pr.then(app => require(`./${coreModule}/${coreModule}`).init(server, app, logger.getLogger(coreModule), config.server[coreModule]));
     }
 
     pr.then(app => {
