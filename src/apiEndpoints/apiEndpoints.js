@@ -31,7 +31,7 @@ function rotate(arr, k) {
  * @returns {*}
  */
 exports.init = (server, app, logger, apiEndpoints) => {
-    const clusterID = cluster.worker.id;
+    const clusterID = cluster.isMaster ? 1 : cluster.worker.id;
     const initalApiEndpoinIndex = clusterID % apiEndpoints.length;
     let endpoints = rotate(apiEndpoints.slice(), apiEndpoints.length - initalApiEndpoinIndex); // copy the array
 

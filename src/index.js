@@ -8,4 +8,4 @@ const config = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json")).t
 const frontendWorker = require("./_worker");
 const frontendMaster = require("./_master");
 
-cluster.isMaster ? frontendMaster.start(config) : frontendWorker.start(config);
+cluster.isMaster && !process.env.DEBUG_MODE ? frontendMaster.start(config) : frontendWorker.start(config);

@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "npm test",
+    "debug": "rm -rf logs && DEBUG_MODE=true node --inspect-brk=18899 src/index.js ",
     "start": "rm -rf logs && node src/index.js",
     "startpm2": "rm -rf logs && pm2 start process.json"
   },

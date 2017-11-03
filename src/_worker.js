@@ -17,6 +17,7 @@ exports.start = config => {
     const MAX_JSON_SIZE = "5bm";
 
     let app = logger.init(express(), config.server.logger);
+    app.locals.startTime = new Date();
     app.locals.requestCount = 0;
     const systemLogger = logger.getLogger("system", "info");
     const server = http.createServer(app);
@@ -49,12 +50,11 @@ exports.start = config => {
             }))
             .use((err, req, res, next) => {
                 require("./logger/logger").getLogger("error", "info").log(err.stack);
-                res.status(500).send();
+                res.status(503).send();
                 cluster.worker.kill(); // restart on error
             });
 
         server.listen(config.server.port, config.server.hostname);
-        app.locals.startTime = new Date();
 
         systemLogger.log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);
     });
