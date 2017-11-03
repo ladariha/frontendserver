@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redis sample</title>
+    <style>
+        pre {
+            background: #c7c9c7;
+            padding: 1em;
+            border-radius: 10px;
+        }
+        pre span {
+            color: #1c7bc9;
+        }
+
+        pre span.system{
+            color: #ff791f;
+        }
+        pre span.critical{
+            color: red;
+        }
+        pre p {
+            text-align: right;
+            width: 100%;
+            margin: 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<button id="connectBtn">Connect to SSE</button>
+<button id="createImageBtn">Create image</button>
+<pre id="output">
+</pre>
+<script src="redis.js"></script>
+</body>
+</html>

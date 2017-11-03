@@ -8,7 +8,7 @@ const MAX_REQUESTS = -1; //10000 + Math.round(Math.random() * 10000);
 
 exports.start = config => {
 
-    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy"];
+    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy", "redis"];
 
     if (process.env.PM2_SETUP) {
         coreModules.unshift("pm2monitor");
@@ -48,9 +48,9 @@ exports.start = config => {
                 extended: true,
                 limit: MAX_JSON_SIZE
             }))
-            .use((err, req, res, next) => {
+            .use((err, req, res, next) => { // default error handler
                 require("./logger/logger").getLogger("error", "info").log(err.stack);
-                res.status(503).send();
+                res.status(503).send(); // reply
                 cluster.worker.kill(); // restart on error
             });
 

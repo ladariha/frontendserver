@@ -21,7 +21,8 @@ exports.init = (server, app) => {
             }
 
             proxy.ws(req, socket, head, {
-                target: target
+                target: target,
+                timeout: 0
             });
         }
     });
@@ -32,7 +33,8 @@ exports.init = (server, app) => {
             target = req.query[PROXY_TARGET_HEADER];
         }
         proxy.web(req, res, {
-            target: target
+            target: target,
+            timeout: 0
         });
     });
     return Promise.resolve(app);
