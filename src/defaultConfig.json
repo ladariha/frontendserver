@@ -1,0 +1,29 @@
+{
+  "server": {
+    "port": 8181,
+    "hostname": "0.0.0.0",
+    "logger": {
+      "minStatusCode": 200,
+      "maxStatusCode": 600,
+      "maxFiles": 5,
+      "logLevel": "info",
+      "interval": "1d",
+      "logRequestPayload": true,
+      "logResponse": true
+    },
+    "messaging": {
+      "redis": {
+        "port": 6379,
+        "host": "127.0.0.1"
+      }
+    },
+    "compression": {
+      "level": 6,
+      "threshold": "10kb"
+    },
+    "assets": {
+      "location": "../assets"
+    },
+    "apiEndpoints": []
+  }
+}

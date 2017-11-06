@@ -15,7 +15,7 @@ let defaultTransport = null;
 let defaultLogLevel = null;
 
 exports.init = (app, loggerConfiguration) => {
-    defaultLogLevel = loggerConfiguration.logLevel || "info";
+    defaultLogLevel = loggerConfiguration.logLevel;
     defaultTransport = new transports.Rotate({
         file: path.join(LOG_DIR, LOG_FILE_NAME), // this path needs to be absolute
         colorize: false,
@@ -23,7 +23,7 @@ exports.init = (app, loggerConfiguration) => {
         json: false,
         level: defaultLogLevel,
         size: "10m",
-        keep: loggerConfiguration.maxFiles || 5,
+        keep: loggerConfiguration.maxFiles,
         compress: false
     });
 

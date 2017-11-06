@@ -1,26 +1,39 @@
 {
   "server": {
+    // server's port, if changed make sure to update Dockerfile
     "port": 8181,
     "hostname": "0.0.0.0",
+    // logger configuration
     "logger": {
+      // will only log HTTP requests where minStatusCode <= [status code] <= maxStatusCode
       "minStatusCode": 200,
       "maxStatusCode": 600,
+      // logRotate config - max number of files to rotate
       "maxFiles": 5,
+      // log level, allowed values (ascending): error, warn, info, verbose, debug, silly
       "logLevel": "info",
       "interval": "1d",
+      // TODO if HTTP request payload should be logged (does not account WS)
       "logRequestPayload": true,
+      // TODO if HTTP response payload should be logged
       "logResponse": true
     },
+    // optional messaging system config
     "messaging": {
+      // configuration of redis
       "redis": {
         "port": 6379,
         "host": "127.0.0.1"
       }
     },
+    // compression of HTTP Responses
     "compression": {
+      // compression level
       "level": 6,
+      // minimum response size to compress
       "threshold": "10kb"
     },
+    // location of static assets
     "assets": {
       "location": "../assets"
     },

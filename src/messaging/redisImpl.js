@@ -8,9 +8,7 @@ const isNull = require("../util/util").isNull;
 // "master" redis client so that we don't need to create a new client for each REST request
 let masterRedisClient = null;
 let defaultConfiguration = null;
-const DEFAULT_REDIS_PORT = 6379;
 const RECONNECTION_LIMIT = 100;
-const DEFAULT_REDIS_HOST = "127.0.0.1";
 const OPTIONAL_CONFIG_PARAMS = ["password", "family", "db"];
 
 function _getRedisClient(clientConfiguration) {
@@ -68,8 +66,8 @@ function init(config) {
             defaultConfiguration = config;
         } else {
             defaultConfiguration = {
-                port: config.port || DEFAULT_REDIS_PORT,
-                host: config.host || DEFAULT_REDIS_HOST
+                port: config.port,
+                host: config.host
             };
 
             OPTIONAL_CONFIG_PARAMS.forEach(property => {
