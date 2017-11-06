@@ -8,7 +8,7 @@ const MAX_REQUESTS = -1; //10000 + Math.round(Math.random() * 10000);
 
 exports.start = config => {
 
-    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy", "redis"];
+    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy", "messaging"];
 
     if (process.env.PM2_SETUP) {
         coreModules.unshift("pm2monitor");
