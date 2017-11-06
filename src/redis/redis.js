@@ -26,7 +26,7 @@ function _getRedisClient(clientConfiguration) {
  * @param req
  */
 function getRedis(req) {
-    const logger = Logger.getLogger("Redis /_redis " + req ? `#${req.id}` : "master client");
+    const logger = Logger.getLogger("Redis /_redis " + (req ? `#${req.id}` : "master client"));
     const redis = _getRedisClient({
         retryStrategy: function (times) {
             logger.log(`retrying ${times}`);
