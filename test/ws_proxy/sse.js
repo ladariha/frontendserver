@@ -74,7 +74,7 @@
         this.callbacks.close && this.callbacks.close(message);
     };
 
-    new CoreSSE("http://localhost:8080/_sseproxy").onMessage(console.log).listen();
+    new CoreSSE("http://localhost:8181/_sseproxy").onMessage(console.log).listen();
 
 
 }

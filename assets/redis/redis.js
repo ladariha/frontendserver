@@ -76,7 +76,7 @@
 
 
     function connectSSE() {
-        new CoreSSE("http://localhost:18081/_redis")
+        new CoreSSE("http://localhost:8181/_redis")
             .onOpen(() => {
                 window.document.getElementById("output").innerHTML += `\n<span class="system">[${new Date()}]</span>&nbsp;SSE Connection established`;
             })
@@ -94,7 +94,7 @@
 
     function createImage() {
         window.document.getElementById("output").innerHTML += `<p> Sending request to create image&nbsp;<span>[${new Date()}]</span></p>`;
-        fetch("http://localhost:18081/_redis/api", {method: "post"})
+        fetch("http://localhost:8181/_redis/api", {method: "post"})
             .then(response => {
                 if (!response.ok) {
                     throw Error(response.statusText);

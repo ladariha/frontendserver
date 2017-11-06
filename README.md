@@ -22,11 +22,11 @@ Some useful commands
 ### How to run as a docker container
 
     $ docker build --build-arg HTTP_PROXY= --build-arg HTTPS_PROXY= -t ladariha/frontendserver .
-    $ docker run -p 8080:8080 -d ladariha/frontendserver
+    $ docker run -p 8181:8181 -d ladariha/frontendserver
  
 ### How to run as a docker container with PM2
 
     $ docker build --build-arg HTTP_PROXY= --build-arg HTTPS_PROXY= -t ladariha/frontendserver .
-    $ docker run -p 8080:8080 -p 9615:9615 -d ladariha/frontend
+    $ docker run -p 8181:8181 -p 9615:9615 -d ladariha/frontend
     $ docker exec -i -t [CONTAINER_ID] /bin/bash
     $ docker rm -rf [CONTAINER_ID]

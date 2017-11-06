@@ -4,6 +4,7 @@ const Redis = require("ioredis");
 const Logger = require("../logger/logger");
 const SSE = require("sse-express");
 const uuid = require("uuid");
+const isNull = require("../util/util").isNull;
 
 let defaultConfiguration = null;
 const DEFAULT_REDIS_PORT = 6379;
@@ -15,10 +16,6 @@ const REDIS_API_PATH_REST = "/_redis/api";
 
 // "master" redis client so that we don't need to create a new client for each REST request
 let masterRedisClient = null;
-
-function isNull(x) {
-    return x === null || typeof x === "undefined";
-}
 
 function _getRedisClient(clientConfiguration) {
     return defaultConfiguration ? new Redis(Object.assign(clientConfiguration, defaultConfiguration)) : null;
@@ -42,6 +39,7 @@ function getRedis(req) {
 
 
     if (req) {
+        // utility method to prevent redis from reconnecting in retryStrategy()
         redis.__frontendQuit = () => {
             redis.__frontendServerForceQuit = true;
             redis.quit();
@@ -49,7 +47,6 @@ function getRedis(req) {
         req.on("close", () => {
             // close connection to redis when clients connection has been closed
             logger.log("client connection closed, closing redis client");
-            redis.__frontendServerForceQuit = true;
             redis.__frontendQuit();
         });
     }

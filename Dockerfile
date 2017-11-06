@@ -4,7 +4,7 @@ FROM node:8.7.0
 # docker build --build-arg HTTP_PROXY= --build-arg HTTPS_PROXY= -t ladariha/frontend .
 # docker run -p 8080:8080 -d ladariha/frontend
 
-ENV EXPOSED_PORT=8080
+ENV EXPOSED_PORT=8181
 ENV EXPOSED_PORT_PM2_HEALTH=9615
 # install pm2
 RUN npm install -g pm2

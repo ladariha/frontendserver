@@ -2,7 +2,7 @@
 // via frontend proxy
 {
     const WebSocket = require("ws");
-    const socket = new WebSocket("ws://localhost:8080/_proxy?target=http%3A%2F%2Flocalhost%3A1337");
+    const socket = new WebSocket("ws://localhost:8181/_proxy?target=http%3A%2F%2Flocalhost%3A1337");
     socket.onopen = function () {
         socket.send("PROXY: hello from the client");
     };
@@ -19,7 +19,7 @@
 // to frontend directly
 {
     const WebSocket = require("ws");
-    const socket = new WebSocket("ws://localhost:8080/_ws");
+    const socket = new WebSocket("ws://localhost:8181/_ws");
     socket.onopen = function () {
         socket.send("DIRECT: hello from the client 2");
     };
