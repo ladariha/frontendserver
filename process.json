@@ -7,7 +7,7 @@
       "error_file": "pm.log",
       "log_file": "pm.log",
       "merge_logs": true,
-      "instances": -1,
+      "instances": 0,
       "listen_timeout": 10000,
       "watch": true,
       "ignore_watch": [

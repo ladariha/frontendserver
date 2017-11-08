@@ -2,7 +2,9 @@
   "server": {
     "port": 8181,
     "hostname": "0.0.0.0",
+    "maxRequestsBeforeRestart" : -1,
     "logger": {
+      "logRequests" : true,
       "minStatusCode": 200,
       "maxStatusCode": 600,
       "maxFiles": 5,

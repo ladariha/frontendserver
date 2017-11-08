@@ -27,14 +27,16 @@ exports.init = (app, loggerConfiguration) => {
         compress: false
     });
 
-    return app
+    app
         .use((req, res, next) => {
             req.id = uuid.v4();
             res.set("X-Request-Id", req.id);
             res.removeHeader("X-Powered-By");
             next();
-        })
-        .use(expressWinston.logger({
+        });
+
+    if (loggerConfiguration.logRequests) {
+        app.use(expressWinston.logger({
             transports: [
                 defaultTransport
             ],
@@ -50,6 +52,8 @@ exports.init = (app, loggerConfiguration) => {
                 return res.statusCode < loggerConfiguration.minStatusCode || res.statusCode > loggerConfiguration.maxStatusCode;
             }
         }));
+    }
+    return app;
 };
 
 exports.getLogger = (prefix = "", logLevel = defaultLogLevel) => {

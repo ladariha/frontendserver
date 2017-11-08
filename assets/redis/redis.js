@@ -76,7 +76,7 @@
 
 
     function connectSSE() {
-        new CoreSSE("http://localhost:8181/_redis")
+        new CoreSSE("http://localhost:8181/_redis?topics=topics/images/status")
             .onOpen(() => {
                 window.document.getElementById("output").innerHTML += `\n<span class="system">[${new Date()}]</span>&nbsp;SSE Connection established`;
             })

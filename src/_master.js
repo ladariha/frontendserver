@@ -1,6 +1,6 @@
 "use strict";
 const cluster = require("cluster");
-const CPU_COUNT = Math.round(require("os").cpus().length * 0.75);
+const CPU_COUNT = Math.round(require("os").cpus().length);
 
 exports.start = () => {
     for (let i = 0; i < CPU_COUNT; i++) {

@@ -3,8 +3,12 @@
     // server's port, if changed make sure to update Dockerfile
     "port": 8181,
     "hostname": "0.0.0.0",
+    // maximum number of requests before auto restart
+    "maxRequestsBeforeRestart" : -1,
     // logger configuration
     "logger": {
+      // if HTTP requests should be logged - might have performance impact
+      "logRequests" : false,
       // will only log HTTP requests where minStatusCode <= [status code] <= maxStatusCode
       "minStatusCode": 200,
       "maxStatusCode": 600,

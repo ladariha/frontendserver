@@ -4,10 +4,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const http = require("http");
 const cluster = require("cluster");
-const MAX_REQUESTS = -1; //10000 + Math.round(Math.random() * 10000);
 
 exports.start = config => {
 
+    const MAX_REQUESTS = config.server.maxRequestsBeforeRestart; //10000 + Math.round(Math.random() * 10000);
     const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy", "messaging"];
 
     if (process.env.PM2_SETUP) {
@@ -22,18 +22,20 @@ exports.start = config => {
     const systemLogger = logger.getLogger("system", "info");
     const server = http.createServer(app);
 
-    app.all("*", (req, res, next) => {
-        app.locals.requestCount++;
-        if (app.locals.requestCount >= MAX_REQUESTS && MAX_REQUESTS > -1) {
-            systemLogger.log("Maximum number of requests reached, restarting");
-            res.status(503);
-            res.set("Retry-After", 7);
-            res.send();
-            cluster.worker.kill();
-        } else {
-            next();
-        }
-    });
+    if(MAX_REQUESTS > -1) {
+        app.all("*", (req, res, next) => {
+            app.locals.requestCount++;
+            if (app.locals.requestCount >= MAX_REQUESTS && MAX_REQUESTS > -1) {
+                systemLogger.log("Maximum number of requests reached, restarting");
+                res.status(503);
+                res.set("Retry-After", 7);
+                res.send();
+                cluster.worker.kill();
+            } else {
+                next();
+            }
+        });
+    }
 
     let pr = Promise.resolve(app);
 

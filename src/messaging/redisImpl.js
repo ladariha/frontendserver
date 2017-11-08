@@ -95,7 +95,7 @@ function handleNewSubscription(res, logger, err, code) {
 function handleCreateImageRequest(req, res) {
 
     const newUuid = uuid.v4();
-    getMasterRedisClient().publish("topics/images", `newImage/${newUuid}`);
+    getMasterRedisClient().publish("topics/images/status", `newImage/${newUuid}`);
 
     res.status(202).json({
         uuid: newUuid,
@@ -113,18 +113,34 @@ function handleSSEListenEvent(req, res) {
     const logger = Logger.getLogger("Redis /_redis " + req.id);
     const redis = getRedis(req, res);
 
+    let topics = req.query.topics;
+    if (!isNull(topics)) {
+        topics = topics.split(",");
+    } else {
+        topics = [];
+    }
+
+    logger.log("new sse connection, topics " + topics);
 
     // send the client a confirmation
     res.sse("message", {"data": "initialized"});
 
     // subscribe to specific topics
-    redis.subscribe("topics/images/status", "REGULAR", "BROADCAST/SSE", (err, code) => handleNewSubscription(res, logger, err, code));
+    redis.subscribe("REGULAR", "BROADCAST/SSE", (err, code) => handleNewSubscription(res, logger, err, code));
 
     // or just subscribe to regex pattern
     redis.psubscribe("*", (err, code) => handleNewSubscription(res, logger, err, code));
 
-    redis.on("message", (channel, message) => res.sse("message", {"redis": {topic: "", message, channel}}));
-    redis.on("pmessage", (pattern, channel, message) => res.sse("message", {"redis": {topic: "", message, channel}}));
+    redis.on("message", (channel, message) => {
+        if (topics.indexOf(channel) > -1) {
+            res.sse("message", {"redis": {topic: "", message, channel}});
+        }
+    });
+    redis.on("pmessage", (pattern, channel, message) => {
+        if (topics.indexOf(channel) > -1) {
+            res.sse("message", {"redis": {topic: "", message, channel}});
+        }
+    });
 }
 
 
