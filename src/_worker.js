@@ -14,7 +14,7 @@ exports.start = config => {
         coreModules.unshift("pm2monitor");
     }
 
-    const MAX_JSON_SIZE = "5bm";
+    const MAX_JSON_SIZE = "5mb";
 
     let app = logger.init(express(), config.server.logger);
     app.locals.startTime = new Date();
@@ -36,7 +36,12 @@ exports.start = config => {
             }
         });
     }
-
+    app.use(bodyParser.json({limit: MAX_JSON_SIZE})) // to support JSON-encoded bodies
+       .use(bodyParser.urlencoded({
+           extended: true,
+           limit: MAX_JSON_SIZE
+        }));
+    
     let pr = Promise.resolve(app);
 
     for (let coreModule of coreModules) {
@@ -45,11 +50,6 @@ exports.start = config => {
 
     pr.then(app => {
         app
-            .use(bodyParser.json({limit: MAX_JSON_SIZE})) // to support JSON-encoded bodies
-            .use(bodyParser.urlencoded({
-                extended: true,
-                limit: MAX_JSON_SIZE
-            }))
             .use((err, req, res, next) => { // default error handler
                 require("./logger/logger").getLogger("error", "info").log(err.stack);
                 res.status(503).send(); // reply
