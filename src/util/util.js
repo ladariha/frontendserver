@@ -15,6 +15,10 @@ function isArray(v) {
 
 function _traverseArray(userConfig, defaults) {
 
+    if (!isNull(userConfig) && defaults.length < 1) {
+        return userConfig;
+    }
+
     return defaults.map((v, i) => {
         if (isNull(v)) {
             return null;
@@ -33,7 +37,9 @@ function _traverseArray(userConfig, defaults) {
 function _traverseObject(userConfig, defaults) {
 
     const currentConfig = {};
+    const iteratedDefaults = new Set();
     for (let k of Object.keys(defaults)) {
+        iteratedDefaults.add(k);
         if (isNull(defaults[k])) {
             continue;
         }
@@ -43,6 +49,12 @@ function _traverseObject(userConfig, defaults) {
             currentConfig[k] = _traverseArray(userConfig[k], defaults[k]);
         } else {
             currentConfig[k] = _traverseObject(userConfig[k], defaults[k]);
+        }
+    }
+
+    for (let k of Object.keys(userConfig)) {
+        if (!iteratedDefaults.has(k)) {
+            currentConfig[k] = userConfig[k];
         }
     }
 
