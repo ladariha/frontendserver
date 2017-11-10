@@ -1,5 +1,14 @@
 # frontendserver
 
+Simple generic NodeJS server boilerplate that includes
+ - ExpressJS
+ - endpoints for proxying requests (reverse proxy) - includes common HTTP requests and WebSockets as well
+ - endpoint for SSE messaging
+ - logging
+ - sample Redis client
+ - pm2 process manager
+ - dockerfile to build a new docker image
+
 ### How to run locally
 
     $ npm install
