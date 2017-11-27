@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const http = require("http");
 const cluster = require("cluster");
 
+
 exports.start = config => {
 
     const MAX_REQUESTS = config.server.maxRequestsBeforeRestart; //10000 + Math.round(Math.random() * 10000);
@@ -22,7 +23,7 @@ exports.start = config => {
     const systemLogger = logger.getLogger("system", "info");
     const server = http.createServer(app);
 
-    if(MAX_REQUESTS > -1) {
+    if (MAX_REQUESTS > -1) {
         app.all("*", (req, res, next) => {
             app.locals.requestCount++;
             if (app.locals.requestCount >= MAX_REQUESTS && MAX_REQUESTS > -1) {
@@ -37,11 +38,11 @@ exports.start = config => {
         });
     }
     app.use(bodyParser.json({limit: MAX_JSON_SIZE})) // to support JSON-encoded bodies
-       .use(bodyParser.urlencoded({
-           extended: true,
-           limit: MAX_JSON_SIZE
+        .use(bodyParser.urlencoded({
+            extended: true,
+            limit: MAX_JSON_SIZE
         }));
-    
+
     let pr = Promise.resolve(app);
 
     for (let coreModule of coreModules) {
@@ -51,9 +52,12 @@ exports.start = config => {
     pr.then(app => {
         app
             .use((err, req, res, next) => { // default error handler
-                require("./logger/logger").getLogger("error", "info").log(err.stack);
-                res.status(503).send(); // reply
-                cluster.worker.kill(); // restart on error
+                const PromiseError = require("./util/promiseError");
+                new PromiseError(PromiseError.GeneralError, err);
+                setTimeout(() => {
+                    res.status(503).send(); // reply
+                    cluster.worker.kill(); // restart on error
+                }, 5000);
             });
 
         server.listen(config.server.port, config.server.hostname);
