@@ -5,10 +5,14 @@
 
     function CoreSSE(url) {
         this.url = url;
+        this._Channel = EventSource;
         this._source = null;
         this.isConnected = false;
         this.callbacks = {};
         this.latestES = null;
+        this.name = "SSE";
+
+        this._checkInterval = -1;
     }
 
     CoreSSE.prototype._buildUrl = function () {
@@ -35,10 +39,23 @@
         return this._addListener("message", fnc);
     };
 
+    CoreSSE.prototype.reconnect = function () {
+        if (this._source === null || this._source.readyState === this._Channel.CLOSED) {
+            window.clearInterval(this._checkInterval);
+            this.isConnected = false;
+            this.listen();
+        }
+    };
 
     CoreSSE.prototype.listen = function () {
         let self = this;
-        this._source = new EventSource(this._buildUrl());
+        if (this.isConnected) {
+            return;
+        }
+        this._source = new this._Channel(this._buildUrl());
+        this._checkInterval = window.setInterval(() => {
+            self.reconnect();
+        }, 5000);
 
         // marker for latest ES instance - in case 'error' event happens in older ES instance during initialization of a new ES instance so that the new instance is not closed by older event
         this._source.CORE_ID = "es_" + (++counter);
@@ -53,14 +70,23 @@
             self.callbacks.open && self.callbacks.open(e);
         }, false);
 
+        this._source.addEventListener("close", function (e) {
+            self.isConnected = false;
+            self.callbacks.open && self.callbacks.close(e);
+            window.setTimeout(() => self.listen(), 5000);
+        }, false);
+
         this._source.addEventListener("error", function (e) {
 
-            if (e.readyState === EventSource.CLOSED && (CORE.getProp(["currentTarget", "CORE_ID"], e) === self.latestES)) {
+            if (e.readyState === self._Channel.CLOSED && (CORE.getProp(["currentTarget", "CORE_ID"], e) === self.latestES)) {
                 self.isConnected = false;
                 self.callbacks.close && self.callbacks.close(e);
             }
+            self._source.close();
+            window.setTimeout(() => self.listen(), 5000);
             self.callbacks.error && self.callbacks.error(e);
         }, false);
+
 
         return this;
     };
@@ -72,29 +98,50 @@
         this.callbacks.close && this.callbacks.close(message);
     };
 
-//
+
+    function connect(client) {
+        client
+            .onOpen(() => {
+                window.document.getElementById("output").innerHTML += `\n<span class="system">[${new Date()}]</span>&nbsp;${client.name} Connection established`;
+            })
+            .onError(e => {
+                window.document.getElementById("output").innerHTML += `\n<span class="critical">[${new Date()}]</span>&nbsp;${client.name} error ${JSON.stringify(e)}`;
+            })
+            .onClose(() => {
+                window.document.getElementById("output").innerHTML += `\n<span class="system">[${new Date()}]</span>&nbsp;${client.name} Connection closed`;
+            })
+            .onMessage(e => {
+                window.document.getElementById("output").innerHTML += `\n<span>[${new Date()}]</span>&nbsp;${client.name} Received: ${e.data}`;
+            })
+            .listen();
+        return client;
+    }
+
+
+    function CoreWS(url) {
+        CoreSSE.call(this, url);
+        this.name = "WebSocket";
+        this._Channel = WebSocket;
+    }
+
+    CoreWS.prototype = Object.create(CoreSSE.prototype);
 
 
     function connectSSE() {
-        new CoreSSE("http://localhost:8181/_redis?topics=topics/images/status")
-            .onOpen(() => {
-                window.document.getElementById("output").innerHTML += `\n<span class="system">[${new Date()}]</span>&nbsp;SSE Connection established`;
-            })
-            .onError(e => {
-                window.document.getElementById("output").innerHTML += `\n<span class="critical">[${new Date()}]</span>&nbsp;SSE error ${JSON.stringify(e)}`;
-            })
-            .onClose(() => {
-                window.document.getElementById("output").innerHTML += `\n<span class="system">[${new Date()}]</span>&nbsp;SSE Connection closed`;
-            })
-            .onMessage(e => {
-                window.document.getElementById("output").innerHTML += `\n<span>[${new Date()}]</span>&nbsp;Received: ${e.data}`;
-            })
-            .listen();
+        connect(new CoreSSE("http://localhost:18081/_redis?topics=topics/images/status"));
+    }
+
+
+    function connectWS() {
+        const cl = connect(new CoreWS("ws://localhost:18081/_ws"));
+        window.setInterval(() => {
+            cl._source.send("aaa");
+        }, 5000);
     }
 
     function createImage() {
         window.document.getElementById("output").innerHTML += `<p> Sending request to create image&nbsp;<span>[${new Date()}]</span></p>`;
-        fetch("http://localhost:8181/_redis/api", {method: "post"})
+        fetch("http://localhost:18081/_redis/api", {method: "post"})
             .then(response => {
                 if (!response.ok) {
                     throw Error(response.statusText);
@@ -109,5 +156,6 @@
     }
 
     window.document.getElementById("connectBtn").addEventListener("click", connectSSE);
+    window.document.getElementById("connectBtn2").addEventListener("click", connectWS);
     window.document.getElementById("createImageBtn").addEventListener("click", createImage);
 }
