@@ -9,7 +9,7 @@ const cluster = require("cluster");
 exports.start = config => {
 
     const MAX_REQUESTS = config.server.maxRequestsBeforeRestart; //10000 + Math.round(Math.random() * 10000);
-    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy", "messaging"];
+    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy", "messaging", "io"];
 
     if (process.env.PM2_SETUP) {
         coreModules.unshift("pm2monitor");

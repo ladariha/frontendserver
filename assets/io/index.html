@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="/_channel/socket.io.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Socket.IO sample</title>
+    <style>
+        pre {
+            background: #c7c9c7;
+            padding: 1em;
+            border-radius: 10px;
+        }
+
+        pre span {
+            color: #1c7bc9;
+        }
+
+        pre span.system {
+            color: #ff791f;
+        }
+
+        pre span.critical {
+            color: red;
+        }
+
+        pre p {
+            text-align: right;
+            width: 100%;
+            margin: 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<button id="connectBtn">Connect</button>
+<pre id="output">
+</pre>
+<script>
+
+
+    var socket = io({transports: ["websocket"], path: "/_channel"});
+
+    socket.on("connect", function (data) {
+        console.log("Socket connected (client side):", data);
+        socket.emit("message", {id: performance.now()}, function (responseData) {
+            console.log("Callback called with data:", responseData);
+        });
+    });
+    socket.on("event", function (data) {
+        console.log(arguments);
+    });
+    socket.emit("message", {id: performance.now()}, function () {
+        console.log(132e4);
+    });
+    socket.on("message", function (msg, callback) {
+        window.document.getElementById("output").innerHTML += `\n<span class="system">[${new Date()}]</span>&nbsp;${JSON.stringify(msg)}`;
+
+        setTimeout(() => callback(1), 2999);
+    });
+
+    socket.on("disconnect", function () {
+        console.log(arguments);
+    });
+
+    socket.on("error", function () {
+        console.log(arguments);
+    });
+
+
+</script>
+</body>
+</html>
