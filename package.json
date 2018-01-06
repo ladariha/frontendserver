@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "lr_frontend",
   "version": "1.0.0",
   "description": "generic frontend server",
   "main": "index.js",
@@ -9,7 +9,7 @@
     "start": "rm -rf logs && node index.js",
     "startpm2": "rm -rf logs && pm2 start process.json"
   },
-  "author": "Vladimir Riha",
+  "author": "Lada Riha",
   "license": "ISC",
   "dependencies": {
     "body-parser": "1.18.2",

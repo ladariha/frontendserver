@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "frontendserver",
-      "script": "src/index_pm.js",
+      "script": "src/index.js",
       "out_file": "pm.log",
       "error_file": "pm.log",
       "log_file": "pm.log",
