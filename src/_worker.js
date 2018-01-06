@@ -5,17 +5,18 @@ const bodyParser = require("body-parser");
 const http = require("http");
 const cluster = require("cluster");
 
+const FrontendServer = require("./frontendServer");
 
-exports.start = config => {
+exports.init = config => {
 
     const MAX_REQUESTS = config.server.maxRequestsBeforeRestart; //10000 + Math.round(Math.random() * 10000);
-    const coreModules = ["compression", "proxy", "websocket", "assets", "heartbeat", "apiEndpoints", "sseProxy", "messaging", "io"];
+    const coreModules =  config.server.coreFeatures;
 
     if (process.env.PM2_SETUP) {
         coreModules.unshift("pm2monitor");
     }
 
-    const MAX_JSON_SIZE = "5mb";
+    const MAX_JSON_SIZE = config.server.maxJsonUploadSize;
 
     let app = logger.init(express(), config.server.logger);
     app.locals.startTime = new Date();
@@ -46,10 +47,10 @@ exports.start = config => {
     let pr = Promise.resolve(app);
 
     for (let coreModule of coreModules) {
-        pr = pr.then(app => require(`./${coreModule}/${coreModule}`).init(server, app, logger.getLogger(coreModule), config.server[coreModule]));
+        pr = pr.then(app => require(`./${coreModule}/${coreModule}`).init(server, app, logger.getLogger(coreModule), config.server[coreModule], config.server.routes[coreModule]));
     }
 
-    pr.then(app => {
+    return pr.then(app => {
         app
             .use((err, req, res, next) => { // default error handler
                 const PromiseError = require("./util/promiseError");
@@ -60,10 +61,7 @@ exports.start = config => {
                 }, 5000);
             });
 
-        server.listen(config.server.port, config.server.hostname);
-
-        systemLogger.log(`Started server on http://${config.server.hostname}:${config.server.port} in '${app.get("env")}' mode`);
+        return new FrontendServer(app, server, config.server.port, config.server.hostname, systemLogger);
     });
-
 
 };

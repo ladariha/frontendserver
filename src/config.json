@@ -1,14 +1,23 @@
 {
   "server": {
+    "coreFeatures": [
+      "compression",
+      "proxy",
+      "websocket",
+      "assets",
+      "heartbeat",
+      "sse",
+      "io"
+    ],
     // server's port, if changed make sure to update Dockerfile
     "port": 8181,
     "hostname": "0.0.0.0",
     // maximum number of requests before auto restart
-    "maxRequestsBeforeRestart" : -1,
+    "maxRequestsBeforeRestart": -1,
     // logger configuration
     "logger": {
       // if HTTP requests should be logged - might have performance impact
-      "logRequests" : false,
+      "logRequests": false,
       // will only log HTTP requests where minStatusCode <= [status code] <= maxStatusCode
       "minStatusCode": 200,
       "maxStatusCode": 600,
@@ -22,13 +31,14 @@
       // TODO if HTTP response payload should be logged
       "logResponse": true
     },
-    // optional messaging system config
-    "messaging": {
-      // configuration of redis
-      "redis": {
-        "port": 6379,
-        "host": "127.0.0.1"
-      }
+    "maxJsonUploadSize": "5mb",
+    "routes": {
+      "assets": "/app",
+      "sse": "/_internal/sse",
+      "heartbeat": "/_internal/hb",
+      "io": "/_internal/io",
+      "proxy": "/_internal/proxy",
+      "websocket": "/_internal/ws"
     },
     // compression of HTTP Responses
     "compression": {
@@ -40,11 +50,6 @@
     // location of static assets
     "assets": {
       "location": "../assets"
-    },
-    "apiEndpoints": [
-      "e1",
-      "e2",
-      "e3"
-    ]
+    }
   }
 }

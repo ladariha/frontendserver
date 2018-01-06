@@ -1,10 +1,19 @@
 {
   "server": {
+    "coreFeatures": [
+      "compression",
+      "proxy",
+      "websocket",
+      "assets",
+      "heartbeat",
+      "sse",
+      "io"
+    ],
     "port": 8181,
     "hostname": "0.0.0.0",
-    "maxRequestsBeforeRestart" : -1,
+    "maxRequestsBeforeRestart": -1,
     "logger": {
-      "logRequests" : true,
+      "logRequests": true,
       "minStatusCode": 200,
       "maxStatusCode": 600,
       "maxFiles": 5,
@@ -13,19 +22,22 @@
       "logRequestPayload": true,
       "logResponse": true
     },
-    "messaging": {
-      "redis": {
-        "port": 6379,
-        "host": "127.0.0.1"
-      }
-    },
+    "maxJsonUploadSize": "5mb",
     "compression": {
       "level": 6,
       "threshold": "10kb"
     },
+    "routes": {
+      "assets": "/",
+      "sse": "/_internal/sse",
+      "loadBalancer": "/_internal/lb",
+      "heartbeat": "/_internal/hb",
+      "io": "/_internal/io",
+      "proxy": "/_internal/proxy",
+      "ws": "/_internal/ws"
+    },
     "assets": {
       "location": "../assets"
-    },
-    "apiEndpoints": []
+    }
   }
 }

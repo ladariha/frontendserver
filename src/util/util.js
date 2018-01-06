@@ -28,13 +28,13 @@ function _traverseArray(userConfig, defaults) {
         } else if (isArray(v)) {
             return _traverseArray(userConfig[i], v);
         } else {
-            return _traverseObject(userConfig[i], v);
+            return _traverse(userConfig[i], v);
         }
     });
 
 }
 
-function _traverseObject(userConfig, defaults) {
+function _traverse(userConfig, defaults) {
 
     const currentConfig = {};
     const iteratedDefaults = new Set();
@@ -48,7 +48,7 @@ function _traverseObject(userConfig, defaults) {
         } else if (isArray(defaults[k])) {
             currentConfig[k] = _traverseArray(userConfig[k], defaults[k]);
         } else {
-            currentConfig[k] = _traverseObject(userConfig[k], defaults[k]);
+            currentConfig[k] = _traverse(userConfig[k], defaults[k]);
         }
     }
 
@@ -62,5 +62,5 @@ function _traverseObject(userConfig, defaults) {
 }
 
 
-exports.resolveConfiguration = (userConfig, defaults) => _traverseObject(userConfig, defaults);
+exports.resolveConfiguration = (userConfig, defaults) => _traverse(userConfig, defaults);
 exports.isNull = isNull;
